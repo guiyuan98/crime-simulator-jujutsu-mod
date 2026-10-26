@@ -1,0 +1,9 @@
+/dist/
+/release/
+.vs/
+*.log
+*.pdb
+*.dll
+*.exe
+*.user
+*.suo
