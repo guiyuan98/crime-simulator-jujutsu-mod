@@ -1,18 +1,18 @@
 # Crime Simulator · 咒术回战技能模组
 
-**v1.4.0 · Windows x64 · Unity Mono · BepInEx 5**
+**v1.5.5 · Windows x64 · Unity Mono · BepInEx 5**
 
-单人术式玩法模组：五条悟与两面宿傩共八个技能，包含咒力护体、立体火焰弓箭、开放式领域和原生技能面板。
+单人术式玩法模组：五条悟与宿傩的八项技能、5000咒力护体、双角色蒙皮模型、原片短台词、可破坏门柜/保险箱和原生技能面板。
 
-**[下载 v1.4.0](https://github.com/guiyuan98/crime-simulator-jujutsu-mod/releases/tag/v1.4.0)** · [测试记录](docs/TESTING.md) · [素材和依赖说明](THIRD_PARTY.md)
+**[下载 v1.5.5](https://github.com/guiyuan98/crime-simulator-jujutsu-mod/releases/tag/v1.5.5)** · [测试记录](docs/TESTING.md) · [素材和依赖说明](THIRD_PARTY.md)
 
-![技能面板与开放式领域（训练场引擎实拍）](docs/images/hud-domain.png)
+![开放式领域（1.5.5 原生玩家相机，API施放）](docs/images/native-shrine.png)
 
 ## 安装
 
 1. 退出游戏。准备 Windows x64 的 Crime Simulator **Mono** 版本；已测试环境为 Unity 2022.3.62f3、BepInEx 5.4.23.5。
 2. 若未安装加载器，先按 [BepInEx 官方文档](https://docs.bepinex.dev/articles/user_guide/installation/index.html) 安装 **BepInEx 5.x Windows x64 / Mono**，运行一次游戏以生成配置，再退出。
-3. 下载 Release 中的 `JujutsuLocal-v1.4.0-win-x64.zip`，将压缩包内的 `BepInEx` 文件夹合并到游戏根目录。升级前可备份本模组自己的配置。
+3. 下载 Release 中的 `JujutsuLocal-v1.5.5-win-x64.zip`，将压缩包内的 `BepInEx` 文件夹合并到游戏根目录。升级前可备份本模组自己的配置。
 4. 在已有的 `BepInEx/config/BepInEx.cfg` 中确认以下设置；只修改这个字段，不覆盖其他加载器配置：
 
    ```ini
@@ -50,9 +50,22 @@
 - 伏魔御厨子为开放式领域：真实3D神龛、密集持续斩击，没有包围玩家的碰撞墙。
 - 左下圆角技能卡片显示实际按键、咒力、冷却与状态；通知不再覆盖物品栏中央。
 
-![火焰弓（训练场引擎实拍）](docs/images/fuga-charge.png)
+![火焰弓（1.5.5 原生玩家相机）](docs/images/native-fuga.png)
 
-![神龛模型（训练场引擎实拍）](docs/images/shrine.png)
+![五条悟·茈（1.5.5 原生玩家相机）](docs/images/native-purple.png)
+
+![五条悟角色模型（原生骨骼模型检查相机）](docs/images/gojo-model.png)
+
+![宿傩角色模型（原生骨骼模型检查相机）](docs/images/sukuna-model.png)
+
+## 1.5.5 更新
+
+- 五条悟苍/赫/茈/无量空处重新制作：缓存3D网格、流光纹理、合流与释放阶段、领域星场及无下限受击提示。
+- 双角色运行时蒙皮模型：原生身体/第一人称手部骨骼、持物、死亡布娃娃、角色切换与原始模型恢复。
+- 原片出处优先：10个语音槽均可定位来源，4个术式名、6个对应角色短句；苍/捌使用已确认的角色短句。17个WAV及来源表随DLL嵌入，音量可配置。
+- 修复电击直接致死绕过无下限/护体的问题，覆盖护甲、直接受伤字段及本地玩家初始化时序。
+- 技能可破坏门、柜、锁、机械/电子保险箱及相应任务物件；保留内部战利品、正常拾取、原生任务奖励和警戒规则。另支持已测试的安防设备。
+- 同一发布DLL保留8组原生251项断言与训练场八技能通过记录；截图来自实际原生相机，不把API驱动写成人工键鼠验收。具体覆盖及原生任务例外见[测试说明](docs/TESTING.md)。
 
 ## 本地构建
 
@@ -72,6 +85,12 @@ DLL 编译标识可能因编译环境改变而不同；Release 附带 SHA-256 �
 
 ## 发布内容
 
-源码、所需图像资源、默认配置和整理后的测试记录；不包含游戏文件、反编译记录、账号凭据、个人路径、调试日志与旧版备份。
+源码、所需图像/短音频资源、默认配置和整理后的测试记录；不包含游戏文件、反编译记录、账号凭据、个人路径、调试日志与旧版备份。
 
 这是非官方模组。本仓库暂未选择开源许可证；依赖和素材说明见 [THIRD_PARTY.md](THIRD_PARTY.md)。
+
+## 可复用维护提示
+
+```text
+保持既有F/G/V/X、5000咒力及十倍伤害。修改共享入口而非逐技能补丁；更新assets/resources.json。构建后核对嵌入资源、运行相关原生专项，区分API测试和物理键鼠操作；发布包不得包含游戏程序集、账号数据或原始存档。
+```

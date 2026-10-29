@@ -10,10 +10,10 @@ using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace CrimeJJK {
-  [BepInPlugin("local.crimesimulator.jujutsu", "Jujutsu Local", "1.4.0")]
+  [BepInPlugin("local.crimesimulator.jujutsu", "Jujutsu Local", "1.5.5")]
   [BepInProcess("Crime Simulator.exe")]
   [DefaultExecutionOrder(-1000)]
-  public sealed class JujutsuMod : BaseUnityPlugin {
+  public sealed partial class JujutsuMod : BaseUnityPlugin {
     public static JujutsuMod Instance;
     readonly Rules rules = new Rules();
     readonly List<GameObject> effects = new List<GameObject>();
@@ -21,6 +21,7 @@ namespace CrimeJJK {
     readonly List<Dummy> dummies = new List<Dummy>();
     readonly HashSet<NPC> slain = new HashSet<NPC>();
     ConfigEntry<bool> active;
+    SkillAudio skillAudio;ConfigEntry<float> voiceVolume,effectVolume;
     ConfigEntry<KeyCode>[] keys;
     static readonly KeyCode[] SkillKeys={KeyCode.F,KeyCode.G,KeyCode.V,KeyCode.X};
     SkillHud skillHud;
@@ -72,6 +73,8 @@ namespace CrimeJJK {
     void Awake() {
       Instance=this;
       active=Config.Bind("General","Enabled",true,"Enable local skills. Hotkeys are configured in Keys.");
+      voiceVolume=Config.Bind("Audio","VoiceVolume",.85f,"Short Japanese dialogue volume (0..1);0 mutes dialogue.");
+      effectVolume=Config.Bind("Audio","EffectVolume",.65f,"Mod effect volume (0..1); speech ducks only the mod's own effects.");
       string[] labels={"Skill1","Skill2","Skill3","Domain","SwitchCharacter","Special","PracticeDummy","ToggleHUD","ToggleMod","PracticeArena"};
       keys=new ConfigEntry<KeyCode>[10];
       for(int i=0;i<10;i++) keys[i]=Config.Bind("Keys",labels[i],i<4?SkillKeys[i]:(KeyCode)((int)KeyCode.Keypad0+(i+1)%10),"Skill defaults: F/G/V/X. Numeric bindings accept both number row and numpad.");
@@ -83,6 +86,8 @@ namespace CrimeJJK {
       solidMaterial.EnableKeyword("_EMISSION");
       solidMaterial.color=new Color(.08f,.09f,.13f);solidMaterial.SetColor("_EmissionColor",new Color(.08f,.09f,.13f));
       sukunaFx=new SukunaFx(material);
+      gojoFx=new GojoFx(shader);
+      skillAudio=new SkillAudio(transform);
       font=Font.CreateDynamicFontFromOSFont(new string[]{"Microsoft YaHei","SimHei","Arial"},20);
       skillHud=SkillHud.Create(transform,font);
       harmony=new Harmony("local.crimesimulator.jujutsu");
@@ -91,16 +96,17 @@ namespace CrimeJJK {
       selfTest=Environment.GetCommandLineArgs().Contains("-jjk-selftest");
       var args=Environment.GetCommandLineArgs();int runIndex=Array.IndexOf(args,"-jjk-run-id");
       if(runIndex>=0 && runIndex+1<args.Length)runId=args[runIndex+1];
-      Logger.LogInfo("JJK_READY v1.4.0 | skills="+string.Join("/",keys.Take(4).Select(k=>k.Value.ToString()).ToArray())+" nativeHUD=True maxEnergy="+Rules.MaxEnergy+" autoShield=True sukunaPermanent=True damageMultiplier="+Rules.DamageMultiplier+" | "+Controls());
+      Logger.LogInfo("JJK_READY v1.5.5 | skills="+string.Join("/",keys.Take(4).Select(k=>k.Value.ToString()).ToArray())+" nativeHUD=True maxEnergy="+Rules.MaxEnergy+" autoShield=True sukunaPermanent=True damageMultiplier="+Rules.DamageMultiplier+" audioClips="+skillAudio.Loaded+" audioMissing="+skillAudio.Missing+" | "+Controls());
       Logger.LogInfo("JJK_SELFTEST_REQUESTED="+selfTest);
       Logger.LogInfo("JJK_COMPONENT active="+gameObject.activeInHierarchy+" enabled="+enabled+" object="+gameObject.name);
     }
     void OnEnable() { Logger.LogInfo("JJK_ON_ENABLE"); }
-    void OnDisable() { Logger.LogInfo("JJK_ON_DISABLE");RestoreNativeKeys();LeaveArena();ClearCombat(); }
+    void OnDisable() { Logger.LogInfo("JJK_ON_DISABLE");RestoreCharacters();RestoreNativeKeys();LeaveArena();ClearCombat(); }
     void OnApplicationQuit() { RestoreNativeKeys(); }
     void Start() { Logger.LogInfo("JJK_START");if(selfTest)StartCoroutine(SelfTest()); }
 
-    void SceneChanged(Scene oldScene, Scene newScene) { RestoreNativeKeys();ClearCombat();slain.RemoveWhere(n=>!n || !n.gameObject.scene.isLoaded);player=null;if(!arena)view=null;scanAt=0; }
+    void SceneChanged(Scene oldScene, Scene newScene) { RestoreCharacters();ResetEnvironmentCache();RestoreNativeKeys();ClearCombat();slain.RemoveWhere(n=>!n || !n.gameObject.scene.isLoaded);player=null;if(!arena)view=null;scanAt=0; }
+    bool PlayerBound {get{return player && player.Object && player.Object.IsValid;}}
     bool SoloReady() {
       if(arena) return true;
       var wm=WorldManager.Instance;
@@ -112,6 +118,7 @@ namespace CrimeJJK {
       if(arena) return;
       var wm=WorldManager.Instance;
       player=wm ? wm.localPlayer : null;
+      if(skillAudio!=null)skillAudio.Route(player);
       view=player ? player.myCamera : null;
       npcs=Object.FindObjectsOfType<NPC>();
       if(npcs.Length==0 && player)npcs=Resources.FindObjectsOfTypeAll<NPC>().Where(n=>n && n.gameObject.scene.IsValid() && n.gameObject.scene.isLoaded && n.gameObject.activeInHierarchy).ToArray();
@@ -133,6 +140,7 @@ namespace CrimeJJK {
       catch(Exception ex) { if(frameErrors++ < 3) Logger.LogError(ex); ClearCombat(); }
     }
     void UpdateCore() {
+      if(skillAudio!=null)skillAudio.Tick(voiceVolume.Value,effectVolume.Value);
       if(!firstFrame){firstFrame=true;Logger.LogInfo("JJK_FIRST_FRAME scene="+SceneManager.GetActiveScene().name);}
       if(selfTest)Application.runInBackground=true;
       if(Time.unscaledTime>=scanAt) { scanAt=Time.unscaledTime+.5f;Scan();slain.RemoveWhere(n=>!n); }
@@ -142,13 +150,13 @@ namespace CrimeJJK {
         if(stamp!=configStamp) { Config.Reload();configStamp=stamp;Logger.LogInfo("JJK_KEYS_RELOADED "+Controls()); }
       }
       SyncNativeKeys(!arena && CombatReady() && !TextEntryActive()?player.rewiredPlayer:null,keys.Take(4).Select(k=>k.Value).ToArray());
-      if(!selfTest && !(player && player.chatActive) && !TextEntryActive())for(int action=0;action<10;action++) {
+      if(!selfTest && !(PlayerBound && player.chatActive) && !TextEntryActive())for(int action=0;action<10;action++) {
         var key=keys[action].Value;var alias=NumericAlias(key);
         if(Input.GetKeyDown(key))HandleKey(key,"keyboard");
         else if(alias!=KeyCode.None && Input.GetKeyDown(alias))HandleKey(alias,"keyboard");
       }
       RestoreExpired();
-      if(!CombatReady()) { if(!arena) ClearCombat();return; }
+      if(!CombatReady()) { if(!arena){bool keep=active.Value && PlayerBound && !player.isDead && rules.Character==0 && (player.pauseActive || player.chatActive);ClearCombat(keep);if(keep && infinity){rules.Tick(Time.deltaTime,true);if(rules.Energy<=0)infinity=false;}}return; }
       if(arena && !selfTest) MoveArena();
       rules.Tick(Time.deltaTime,infinity);
       if(rules.Energy<=0) infinity=false;
@@ -199,7 +207,7 @@ namespace CrimeJJK {
       if(action==9){if(arena)LeaveArena();else if(!player)EnterArena();else Tell("当前地图直接用 "+string.Join("/",Enumerable.Range(0,4).Select(KeyName).ToArray())+" 施放；主菜单进入训练场。");return true;}
       if(!active.Value){Tell("模组已停用；按 "+KeyName(8)+" 开启。");return false;}
       if(!arena && !player)EnterArena();
-      if(!CombatReady()){Tell(player && player.pauseActive?"请关闭暂停菜单再施放技能。":"等待本地单人玩家就绪；也可从主菜单进入训练场。");return false;}
+      if(!CombatReady()){Tell(PlayerBound && player.pauseActive?"请关闭暂停菜单再施放技能。":"等待本地单人玩家就绪；也可从主菜单进入训练场。");return false;}
       if(action<4)return Cast(action);
       if(action==4){rules.Character=1-rules.Character;ClearCombat();Tell(rules.Character==0?"五条悟 · 最强术师":"两面宿傩 · 诅咒之王");}
       else if(action==5)Special();
@@ -207,12 +215,13 @@ namespace CrimeJJK {
       return true;
     }
     void Special() {
-      if(rules.Character==0) { infinity=!infinity && rules.Energy>5;Tell(infinity?"无下限术式 · 开":"无下限术式 · 关");return; }
+      if(rules.Character==0) { infinity=!infinity && rules.Energy>5;if(infinity){GojoWardCue();if(skillAudio!=null)skillAudio.Say(0,4);}Tell(infinity?"无下限术式 · 开":"无下限术式 · 关");return; }
       if(Time.time<specialReady || rules.Energy<30) { Tell("反转术式冷却中或咒力不足");return; }
       if(!arena && player.damage<=0) { Tell("当前无需治疗");return; }
       rules.Energy-=30;specialReady=Time.time+12;
       if(player && !arena) player.damage=Mathf.Max(0,player.damage-40);
       Pulse(view.transform.position+view.transform.forward*2,Color.green,2,.6f);
+      if(skillAudio!=null)skillAudio.Say(1,4);
       Tell("反转术式 · 恢复 40 受伤值");
     }
     bool Cast(int slot) {
@@ -221,10 +230,7 @@ namespace CrimeJJK {
       Logger.LogInfo("JJK_CAST character="+rules.Character+" slot="+slot+" arena="+arena);
       Vector3 origin=view.transform.position, forward=view.transform.forward;
       if(rules.Character==0) {
-        if(slot==0) { bluePoint=Aim(24);blueUntil=Time.time+3;Pulse(bluePoint,blue,3,3);Area(bluePoint,9,15,blue,false); }
-        if(slot==1) { var p=Aim(28);Beam(origin+forward,p,red,.22f,.3f);Area(p,9,65,red,true); }
-        if(slot==2) StartCoroutine(Projectile(origin+forward*1.5f,forward,purple,90,2.7f,180,6));
-        if(slot==3) { domainUntil=Time.time+8;Ring(origin,24,blue,8);foreach(var t in Targets(origin,24)) t.Stun(this,8);Flash(blue,.7f); }
+        GojoCast(slot);
       } else {
         if(slot==0) { var p=Aim(40);Slash(p,red,4);Area(p,3.2f,38,red,false,false); }
         if(slot==1) { var p=origin+forward*2.8f;for(int i=0;i<4;i++) Slash(p+UnityEngine.Random.insideUnitSphere,red,2);Area(p,4,110,red,false,false); }
@@ -319,6 +325,7 @@ namespace CrimeJJK {
     }
     int Area(Vector3 center,float radius,float damage,Color color,bool push,bool pulse=true) {
       damage=Rules.SkillDamage(damage);
+      int environmentHits=DamageEnvironment(center,radius,damage);
       int hits=0,npcHits=0,dummyHits=0;var targets=Targets(center,radius);
       foreach(var t in targets) {
         if(!Visible(t,center))continue;
@@ -330,7 +337,7 @@ namespace CrimeJJK {
       }
       if(pulse)Pulse(center,color,Mathf.Min(radius,6),.45f);
       Logger.LogInfo("JJK_HIT count="+hits+" npc="+npcHits+" dummy="+dummyHits+" candidates="+targets.Count+" damage="+damage+" arena="+arena);
-      if(!arena && npcHits==0){hitFeedback="未伤及真实 NPC · 请瞄准并确认距离与遮挡";hitFeedbackUntil=Time.unscaledTime+2;LogNpcCoverage(center,radius);}
+      if(!arena && npcHits==0 && environmentHits==0){hitFeedback="未伤及真实 NPC · 请瞄准并确认距离与遮挡";hitFeedbackUntil=Time.unscaledTime+2;LogNpcCoverage(center,radius);}
       return hits;
     }
     void LogNpcCoverage(Vector3 center,float radius) {
@@ -365,20 +372,20 @@ namespace CrimeJJK {
       for(int i=0;i<5;i++)sukunaFx.FireFlame(burst,UnityEngine.Random.insideUnitSphere*1.8f,.7f,.55f,false,Vector3.up);
       Ring(position,9,fire,.8f);PlaySound(sukunaFx.Release,.85f,.7f);Logger.LogInfo("JJK_FUGA_IMPACT flameEmitters=6");
     }
-    IEnumerator Projectile(Vector3 position,Vector3 direction,Color color,float speed,float radius,float damage,float blast,bool flaming=false) {
+    IEnumerator Projectile(Vector3 position,Vector3 direction,Color color,float speed,float radius,float damage,float blast,bool flaming=false,bool gojo=false) {
       int revision=combatRevision;
-      GameObject ball=flaming?Effect("fuga_flame_arrow",90/speed+1):Orb(position,color,radius,90/speed+1);
+      GameObject ball=flaming?Effect("fuga_flame_arrow",90/speed+1):gojo?GojoEffect(GojoFx.Form.Purple,position,Quaternion.LookRotation(direction),1.3f,90/speed+1):Orb(position,color,radius,90/speed+1);
       if(flaming){ball.transform.position=position;ball.transform.rotation=Quaternion.LookRotation(direction);sukunaFx.Arrow(ball);}
       float travelled=0;
       while(ball && travelled<90 && CombatReady() && revision==combatRevision) {
         float step=speed*Time.deltaTime;
         bool wall=false;
         foreach(var impact in Physics.SphereCastAll(position,radius*.25f,direction,step,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore).OrderBy(x=>x.distance))if(!IgnoredCollider(impact.collider)){wall=true;position=impact.point;break;}
-        var near=Targets(position,radius+1);
-        if(wall || near.Count>0) { Area(position,blast,damage,color,false,!flaming);if(flaming)FireImpact(position);Flash(color,.2f);Destroy(ball);yield break; }
+        var near=Targets(position,radius+1).Where(t=>Visible(t,position)).ToList();
+        if(wall || near.Count>0) { Area(position,blast,damage,color,false,!flaming && !gojo);if(flaming)FireImpact(position);if(gojo)GojoEffect(GojoFx.Form.PurpleBurst,position,Quaternion.LookRotation(direction),2,.85f);Flash(color,.2f);Destroy(ball);yield break; }
         position+=direction*step;ball.transform.position=position;travelled+=step;yield return null;
       }
-      if(ball) { if(CombatReady() && revision==combatRevision){Area(position,blast,damage,color,false,!flaming);if(flaming)FireImpact(position);}Destroy(ball); }
+      if(ball) { if(CombatReady() && revision==combatRevision){Area(position,blast,damage,color,false,!flaming && !gojo);if(flaming)FireImpact(position);if(gojo)GojoEffect(GojoFx.Form.PurpleBurst,position,Quaternion.LookRotation(direction),2,.85f);}Destroy(ball); }
     }
     void RestoreExpired() {
       foreach(var n in frozen.Keys.ToArray()) {
@@ -387,31 +394,20 @@ namespace CrimeJJK {
       }
     }
     void Restore(NPC n,Frozen f) { if(!n)return;if(n.animator && n.animator.speed==0)n.animator.speed=f.Speed;if(n.AI && n.Object && n.Object.IsValid && !n.knockedDown)n.AI.isStopped=f.Stopped; }
-    void ClearCombat() {
-      combatRevision++;infinity=false;blueUntil=domainUntil=0;
+    void ClearCombat(bool preserveInfinity=false) {
+      if(skillAudio!=null)skillAudio.Stop();
+      combatRevision++;if(!preserveInfinity)infinity=false;blueUntil=domainUntil=0;
       foreach(var p in frozen)Restore(p.Key,p.Value);frozen.Clear();
       foreach(var d in dummies)if(d)d.StunnedUntil=0;
       foreach(var e in effects)if(e)Destroy(e);effects.Clear();
     }
     public static bool BlockDamage(FPP_Player p) {
-      var m=Instance;return m && m.active.Value && m.infinity && m.rules.Character==0 && p==m.player && m.SoloReady();
+      var m=Instance;return m && m.WardContext(p) && m.InfinityReady;
     }
     [HarmonyPatch(typeof(FPP_Player),"DealDamageToPlayer")]
     static class InfinityPatch { static bool Prefix(FPP_Player __instance,ref float dmg,bool ___ressurecting,bool ___damageDelay) { return InterceptIncoming(__instance,ref dmg,___ressurecting,___damageDelay); } }
     public static bool InterceptIncoming(FPP_Player p,ref float damage,bool resurrecting,bool delay) {
-      if(BlockDamage(p))return false;
-      var m=Instance;
-      if(!m || !m.active.Value || !p || p!=m.player || !m.SoloReady() || p.isDead || resurrecting || delay)return true;
-      var wm=p.WM;if(!wm || wm.summaryActive || !wm.difficultyManager || damage<=0 || float.IsNaN(damage) || float.IsInfinity(damage))return true;
-      float factor=wm.difficultyManager.GetCurrentPreset().dmgToPlayerMultiplier*(p.isDodging?.75f:1)*(p.hasArmor?.75f:1);
-      if(factor<=0 || float.IsNaN(factor) || float.IsInfinity(factor))return true;
-      float before=m.rules.Energy,actual=damage*factor;float remainder=m.rules.AbsorbDamage(actual);
-      if(before>m.rules.Energy) {
-        m.Logger.LogInfo("JJK_ENERGY_SHIELD incoming="+actual+" absorbed="+(actual-remainder)+" remainingDamage="+remainder+" energy="+before+"->"+m.rules.Energy);
-        m.Tell("咒力护体 · 抵挡 "+(actual-remainder).ToString("0.0")+" 伤害 · 咒力 "+m.rules.Energy.ToString("0"));
-        m.Flash(m.rules.Character==1?m.red:m.blue,.16f);
-      }
-      damage=remainder/factor;return remainder>0;
+      return WardBody(p,ref damage,resurrecting,delay);
     }
     [HarmonyPatch(typeof(NPC),"WakeUp")]
     static class PermanentDefeatPatch { static bool Prefix(NPC __instance) { if(!Instance || !Instance.slain.Contains(__instance))return true;Instance.wakeBlocks++;return false; } }
@@ -450,6 +446,7 @@ namespace CrimeJJK {
     }
     void Flash(Color c,float seconds) { flashColor=c;flashUntil=Time.unscaledTime+seconds; }
     void Sound(int skill) {
+      if(skillAudio!=null){skillAudio.Cast(rules.Character,skill);return;}
       if(rules.Character==1){if(skill<2)PlaySound(sukunaFx.Cut,.75f,skill==1?.8f:1.1f);return;}
       if(arena && selfTest)return;
       const int count=11025;float[] data=new float[count];
@@ -458,16 +455,18 @@ namespace CrimeJJK {
       var go=Effect("audio",1);var src=go.AddComponent<AudioSource>();src.volume=.6f;src.clip=clip;src.Play();Destroy(clip,1);
     }
     void PlaySound(AudioClip clip,float volume,float pitch) {
+      if(skillAudio!=null){skillAudio.PlayEffect(clip,volume,pitch);return;}
       var go=Effect("sukuna_audio",clip.length/Mathf.Max(.1f,pitch)+.1f);var src=go.AddComponent<AudioSource>();src.clip=clip;src.volume=volume;src.pitch=pitch;src.spatialBlend=0;src.Play();
     }
     void Tell(string text) { notice=text;noticeUntil=Time.unscaledTime+4; }
     void LateUpdate() {
-      try { RefreshHud(); } catch(Exception ex){if(frameErrors++<3)Logger.LogError(ex);}
+      try { SyncCharacters();RefreshHud(); } catch(Exception ex){if(frameErrors++<3)Logger.LogError(ex);}
     }
     void RefreshHud() {
       if(!skillHud)return;
       hudState.Visible=hud;hudState.Character=rules.Character;hudState.Enabled=active.Value;hudState.Ready=CombatReady() && !TextEntryActive();hudState.Energy=rules.Energy;hudState.Accent=rules.Character==1?red:blue;
-      hudState.Status=!active.Value?"已停用":arena?"训练场":player && player.isDead?"已倒下":player && player.pauseActive?"已暂停":SoloReady()?"单人就绪":"等待玩家";
+      bool spawned=PlayerBound;
+      hudState.Status=!active.Value?"已停用":arena?"训练场":spawned && player.isDead?"已倒下":spawned && player.pauseActive?"已暂停":SoloReady()?"单人就绪":"等待玩家";
       if(Time.time<domainUntil)hudState.Status+=" · 领域中";if(infinity)hudState.Status+=" · 无下限";
       hudState.Notice=Time.unscaledTime<noticeUntil?notice:"";
       if(hudState.Notice.StartsWith("开放式领域"))hudState.Notice="领域展开 · 伏魔御厨子";
@@ -589,7 +588,7 @@ namespace CrimeJJK {
       arenaController.Move(Vector3.right*2);bool movementOk=arenaController.transform.position.x-originalPosition.x>1.5f;
       arenaController.Move(Vector3.left*2);
       bool vfxOk=sukunaFx.SlashFrames.Length==23 && sukunaFx.SlashFrames.All(s=>s) && sukunaFx.Cut.samples>10000;
-      int casts=0,skillsPassed=0;
+      int casts=0,skillsPassed=0;bool audioOk=skillAudio!=null && skillAudio.Loaded==17 && skillAudio.Missing==0;
       for(int character=0;character<2;character++)for(int slot=0;slot<4;slot++) {
         ClearCombat();
         Vector3[] positions={new Vector3(0,-999.4f,12),new Vector3(-5,-999.4f,14),new Vector3(5,-999.4f,14),new Vector3(-8,-999.4f,22),new Vector3(0,-999.4f,24),new Vector3(8,-999.4f,22)};
@@ -599,7 +598,10 @@ namespace CrimeJJK {
         view.transform.rotation=Quaternion.LookRotation(dummies[0].transform.position-view.transform.position);
         Physics.SyncTransforms();
         int oldSlashes=sukunaFx.Slashes,oldShots=fireShots,oldImpacts=fireImpacts,oldBursts=domainBursts;
+        int voiceBefore=skillAudio.VoiceStarts[character,slot];
         if(HandleKey(keys[slot].Value,"selftest"))casts++;
+        yield return null;bool heardSource=skillAudio.VoiceStarts[character,slot]==voiceBefore+1 && skillAudio.VoicePlaying;
+        audioOk &= heardSource;Logger.LogInfo("JJK_AUDIO_CAST character="+character+" slot="+slot+" voiceSourcePlaying="+heardSource+" clip="+skillAudio.VoiceId);
         if(character==1 && slot==0) {
           yield return new WaitForSecondsRealtime(.08f);yield return StartCoroutine(CaptureVfx("slash"));
           yield return new WaitForSecondsRealtime(1.42f);vfxOk &= sukunaFx.Slashes>oldSlashes;
@@ -616,6 +618,11 @@ namespace CrimeJJK {
           bool density=domainBursts-oldBursts>=8 && sukunaFx.Slashes-oldSlashes>=64;
           bool open=!effects.Where(e=>e && e.name=="JJK_open_shrine").SelectMany(e=>e.GetComponentsInChildren<Collider>()).Any();
           vfxOk &= density && open;Logger.LogInfo("JJK_DOMAIN_TEST bursts="+(domainBursts-oldBursts)+" slashes="+(sukunaFx.Slashes-oldSlashes)+" dense="+density+" open="+open);
+        } else if(character==0) {
+          yield return new WaitForSecondsRealtime(slot==2?.45f:slot==1?.25f:.4f);yield return StartCoroutine(CaptureVfx("gojo-cast-"+slot+"-early"));
+          yield return new WaitForSecondsRealtime(slot==2?.8f:.6f);yield return StartCoroutine(CaptureVfx("gojo-cast-"+slot+"-late"));
+          yield return new WaitForSecondsRealtime(.5f);
+          vfxOk &= gojoFx.Spawned[slot==0?0:slot==1?2:slot==2?4:6]>0;
         } else yield return new WaitForSecondsRealtime(1.5f);
         bool passed=character==0 && slot==3 ? dummies[0].StunnedUntil>Time.time : dummies[0].HP<300;
         if(passed)skillsPassed++;
@@ -624,6 +631,10 @@ namespace CrimeJJK {
       ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(Paths.GameRootPath,"JJK_PREVIEW.png"));yield return new WaitForEndOfFrame();
       ClearCombat();rules.Character=0;rules.Energy=100;Special();bool infinityOk=infinity;Special();bool offOk=!infinity;
       rules.Character=1;rules.Energy=100;Special();bool healOk=rules.Energy==70;
+      audioOk &= skillAudio.VoiceStarts[0,4]>0 && skillAudio.VoiceStarts[1,4]>0;
+      skillAudio.Tick(0,0);skillAudio.Say(0,4);bool muteOk=skillAudio.VoiceLevel==0;skillAudio.Stop();bool silenceOk=skillAudio.AllStopped;skillAudio.Tick(voiceVolume.Value,effectVolume.Value);
+      skillAudio.Say(0,0);skillAudio.Say(1,0);bool exclusive=skillAudio.VoiceId=="JJK_v10";ClearCombat();audioOk &= muteOk && silenceOk && exclusive && skillAudio.AllStopped;
+      Logger.LogInfo("JJK_AUDIO_TEST loaded="+skillAudio.Loaded+" missing="+skillAudio.Missing+" active-casts=8 specials=2 mute="+muteOk+" exclusive="+exclusive+" stop="+silenceOk+" mixer="+skillAudio.MixerName+" passed="+audioOk);vfxOk &= audioOk;
       foreach(var d in dummies)if(d){d.ResetDummy();}
       dummies[0].transform.position=new Vector3(0,-999.4f,12);dummies[0].HP=1000;Physics.SyncTransforms();
       int hits=Area(new Vector3(0,-999.4f,12),5,40,red,false);
@@ -631,8 +642,15 @@ namespace CrimeJJK {
       Logger.LogInfo("JJK_EXACT_DAMAGE_TEST before=1000 base=40 after="+dummies[0].HP+" passed="+damageOk);
       rules.Energy=100;rules.ReadyAt[1,2]=0;int shotsBeforeCancel=fireShots;Cast(2);yield return new WaitForSecondsRealtime(.2f);ClearCombat();yield return new WaitForSecondsRealtime(1.25f);
       bool cancelOk=fireShots==shotsBeforeCancel;vfxOk &= cancelOk && shieldOk && wakeGuardOk;
+      rules.Character=0;
+      for(int slot=1;slot<=2;slot++) {
+        rules.Energy=5000;rules.ReadyAt[0,slot]=0;int before=gojoReleases;Cast(slot);yield return new WaitForSecondsRealtime(.15f);ClearCombat();yield return new WaitForSecondsRealtime(1.1f);
+        bool stopped=gojoReleases==before;vfxOk &= stopped;Logger.LogInfo("JJK_GOJO_CANCEL_TEST slot="+slot+" noRelease="+stopped);
+      }
+      bool gojoOk=gojoFx.TextureWidth>=512 && gojoFx.Spawned.All(n=>n>0);vfxOk &= gojoOk;
+      Logger.LogInfo("JJK_GOJO_TEST forms="+string.Join(",",gojoFx.Spawned.Select(n=>n.ToString()).ToArray())+" generatedTexture="+gojoFx.TextureWidth+" passed="+gojoOk);
       Logger.LogInfo("JJK_VFX_TEST frames="+sukunaFx.SlashFrames.Length+" slashes="+sukunaFx.Slashes+" flames="+sukunaFx.Flames+" cancelled="+cancelOk+" passed="+vfxOk);
-      yield return StartCoroutine(ReviewShrine());
+      yield return StartCoroutine(ReviewGojo());yield return StartCoroutine(ReviewShrine());
       bool modelOk=sukunaFx.Model.Triangles>20000 && sukunaFx.Model.Triangles<160000 && sukunaFx.Model.Parts==8;
       vfxOk &= modelOk;Logger.LogInfo("JJK_SHRINE_TEST triangles="+sukunaFx.Model.Triangles+" parts="+sukunaFx.Model.Parts+" width="+sukunaFx.Model.Bounds.size.x+" height="+sukunaFx.Model.Bounds.size.y+" model="+modelOk);
       yield return StartCoroutine(ReviewFuga());
@@ -645,7 +663,7 @@ namespace CrimeJJK {
       float cleanupDeadline=Time.realtimeSinceStartup+5;
       do { yield return null; } while(oldScene.isLoaded && Time.realtimeSinceStartup<cleanupDeadline);
       bool cleanupOk=!arena && !oldRoot && !oldScene.isLoaded && oldEffects.All(x=>!x) && oldDummies.All(x=>!x) && frozen.Count==0 && effects.Count==0 && hiddenCanvases.Select((c,i)=>!c || c.enabled==canvasStates[i]).All(x=>x) && hiddenEventSystems.Select((e,i)=>!e || e.enabled==eventSystemStates[i]).All(x=>x) && Cursor.lockState==oldLock && Cursor.visible==oldCursor;
-      string result="JJK_SELFTEST "+(casts==8 && skillsPassed==8 && infinityOk && offOk && healOk && hits>0 && damageOk && movementOk && cleanupOk && inputOk && damageRoutingOk && vfxOk && errors==0?"PASS":"FAIL")+" casts="+casts+" skills="+skillsPassed+" input="+inputOk+" damageRouting="+damageRoutingOk+" infinity="+infinityOk+" off="+offOk+" heal="+healOk+" hits="+hits+" damage10x="+damageOk+" vfx="+vfxOk+" movement="+movementOk+" cleanup="+cleanupOk+" errors="+errors+" run="+runId;
+      string result="JJK_SELFTEST "+(casts==8 && skillsPassed==8 && infinityOk && offOk && healOk && hits>0 && damageOk && movementOk && cleanupOk && inputOk && damageRoutingOk && vfxOk && errors==0?"PASS":"FAIL")+" casts="+casts+" skills="+skillsPassed+" input="+inputOk+" damageRouting="+damageRoutingOk+" infinity="+infinityOk+" off="+offOk+" heal="+healOk+" hits="+hits+" damage10x="+damageOk+" vfx="+vfxOk+" audio="+audioOk+" movement="+movementOk+" cleanup="+cleanupOk+" errors="+errors+" run="+runId;
       Logger.LogInfo(result);System.IO.File.WriteAllText(System.IO.Path.Combine(Paths.GameRootPath,"JJK_SELFTEST.txt"),result);
       Screen.SetResolution(oldWidth,oldHeight,oldFullscreen);Application.runInBackground=background;selfTest=false;rules.Character=0;rules.Energy=Rules.MaxEnergy;specialReady=0;Array.Clear(rules.ReadyAt,0,rules.ReadyAt.Length);
     }
@@ -714,7 +732,7 @@ namespace CrimeJJK {
         Logger.LogInfo("JJK_HUD_LAYOUT size="+width+"x"+height+" textFits="+textFits);
       } finally {canvas.renderMode=oldMode;canvas.worldCamera=oldCamera;canvas.planeDistance=oldDistance;canvas.scaleFactor=oldScale;scaler.enabled=oldScaler;view.targetTexture=oldTarget;RenderTexture.active=oldActive;RenderTexture.ReleaseTemporary(target);if(pixels)Destroy(pixels);Canvas.ForceUpdateCanvases();}
     }
-    void OnDestroy() { Logger.LogInfo("JJK_ON_DESTROY");SceneManager.activeSceneChanged-=SceneChanged;LeaveArena();ClearCombat();RestoreNativeKeys();if(skillHud)Destroy(skillHud.gameObject);if(harmony!=null)harmony.UnpatchSelf();if(sukunaFx!=null)sukunaFx.Dispose();if(material)Destroy(material);if(solidMaterial)Destroy(solidMaterial);if(font)Destroy(font);Instance=null; }
+    void OnDestroy() { Logger.LogInfo("JJK_ON_DESTROY");SceneManager.activeSceneChanged-=SceneChanged;RestoreCharacters();LeaveArena();ClearCombat();RestoreNativeKeys();if(skillHud)Destroy(skillHud.gameObject);if(harmony!=null)harmony.UnpatchSelf();if(skillAudio!=null)skillAudio.Dispose();if(gojoFx!=null)gojoFx.Dispose();if(sukunaFx!=null)sukunaFx.Dispose();if(material)Destroy(material);if(solidMaterial)Destroy(solidMaterial);if(font)Destroy(font);Instance=null; }
   }
   public sealed class FadeFx : MonoBehaviour {
     public float Lifetime=1;public bool Grow;

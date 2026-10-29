@@ -1,0 +1,566 @@
+{
+  "voice_clips": 10,
+  "new_sfx_clips": 7,
+  "fuga_sfx": "Existing separate procedural charge/release/impact layers retained, no duplicate cast sound",
+  "spoken_word_budget": 25,
+  "claims": "Four original technique-name calls and six original character-short-line slots, following the explicit user preference for original-source dialogue over unauthenticated skill-name shouts. No AI voice synthesis or word splicing. Raw long candidates are not embedded.",
+  "voice_policy": "primary-release-dialogue-first",
+  "clips": [
+    {
+      "id": "v00",
+      "kind": "voice",
+      "character": 0,
+      "slot": 0,
+      "source_file": "6ImI4mNKucs.webm",
+      "source_page": "https://www.youtube.com/watch?v=6ImI4mNKucs",
+      "source_url": "https://www.youtube.com/watch?v=6ImI4mNKucs",
+      "source_sha256": "65f49f8240c649e2b209eaeebf460232f66c7748a4d0f7b65d2e61724b39130b",
+      "source_interval": [
+        14.0,
+        14.78
+      ],
+      "duration": 0.78,
+      "line": "大丈夫",
+      "conservative_word_budget": 3,
+      "rms": 0.0754742249625608,
+      "peak": 0.546142578125,
+      "sha256": "0e53aaebfdd6511e8000169b4a2d98011a6c48cb5bb87aa0e10b03bf0bd57385",
+      "provenance": "Direct bounded crop from the verified TOHO public anime release; no voice synthesis or word splicing.",
+      "primary_verification": {
+        "method": "direct-primary-crop",
+        "voice_sha256": "0e53aaebfdd6511e8000169b4a2d98011a6c48cb5bb87aa0e10b03bf0bd57385",
+        "primary_video_id": "6ImI4mNKucs",
+        "primary_url": "https://www.youtube.com/watch?v=6ImI4mNKucs",
+        "primary_title": "「大丈夫 僕 最強だから」 from 『#呪術廻戦 』第1期第2話 #Jujutsukaisen #五条悟",
+        "primary_channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+        "primary_channel_verified": true,
+        "primary_media_file": "voice-source-checkpoint/originals/6ImI4mNKucs.webm",
+        "primary_media_sha256": "65f49f8240c649e2b209eaeebf460232f66c7748a4d0f7b65d2e61724b39130b",
+        "primary_interval": [
+          14.0,
+          14.78
+        ],
+        "threshold": 0.65,
+        "episode_basis": "Season1 episode2, as labeled by TOHO"
+      },
+      "dialogue_kind": "character-short-line"
+    },
+    {
+      "id": "v01",
+      "kind": "voice",
+      "character": 0,
+      "slot": 1,
+      "source_file": "dfiNbugpxgI.webm",
+      "source_page": "https://www.youtube.com/watch?v=dfiNbugpxgI",
+      "source_url": "https://www.youtube.com/watch?v=dfiNbugpxgI",
+      "source_sha256": "113025478cdce7a0e5e47cc994cda8881d8a2e5988604b278e95b2fbad17323f",
+      "source_interval": [
+        6.0,
+        7.25
+      ],
+      "duration": 1.25,
+      "line": "赫",
+      "conservative_word_budget": 1,
+      "rms": 0.08106601384265553,
+      "peak": 0.470855712890625,
+      "sha256": "af6ae9113f7975d110ea1a1bf61505505db8f49be4e824342b98760b63e60b79",
+      "provenance": "Direct bounded crop from the verified TOHO public anime release; no voice synthesis or word splicing.",
+      "primary_verification": {
+        "method": "direct-primary-crop",
+        "voice_sha256": "af6ae9113f7975d110ea1a1bf61505505db8f49be4e824342b98760b63e60b79",
+        "primary_video_id": "dfiNbugpxgI",
+        "primary_url": "https://www.youtube.com/watch?v=dfiNbugpxgI",
+        "primary_title": "「術式反転『 赫』」from「#呪術廻戦 」第28話 #jujutsukaisen #五条悟",
+        "primary_channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+        "primary_channel_verified": true,
+        "primary_media_file": "voice-source-checkpoint/originals/dfiNbugpxgI.webm",
+        "primary_media_sha256": "113025478cdce7a0e5e47cc994cda8881d8a2e5988604b278e95b2fbad17323f",
+        "primary_interval": [
+          6.0,
+          7.25
+        ],
+        "threshold": 0.65,
+        "episode_basis": "TV episode28, as labeled by TOHO"
+      },
+      "dialogue_kind": "technique-name"
+    },
+    {
+      "id": "v02",
+      "kind": "voice",
+      "character": 0,
+      "slot": 2,
+      "source_file": "6ImI4mNKucs.webm",
+      "source_page": "https://www.youtube.com/watch?v=6ImI4mNKucs",
+      "source_url": "https://www.youtube.com/watch?v=6ImI4mNKucs",
+      "source_sha256": "65f49f8240c649e2b209eaeebf460232f66c7748a4d0f7b65d2e61724b39130b",
+      "source_interval": [
+        15.08,
+        16.85
+      ],
+      "duration": 1.77,
+      "line": "僕 最強だから",
+      "conservative_word_budget": 3,
+      "rms": 0.06259955565893648,
+      "peak": 0.789215087890625,
+      "sha256": "a629ebd9a63e4525f518edba1951b143923ee1f01aa31cf7d18ab0815f821b36",
+      "provenance": "Direct bounded crop from the verified TOHO public anime release; no voice synthesis or word splicing.",
+      "primary_verification": {
+        "method": "direct-primary-crop",
+        "voice_sha256": "a629ebd9a63e4525f518edba1951b143923ee1f01aa31cf7d18ab0815f821b36",
+        "primary_video_id": "6ImI4mNKucs",
+        "primary_url": "https://www.youtube.com/watch?v=6ImI4mNKucs",
+        "primary_title": "「大丈夫 僕 最強だから」 from 『#呪術廻戦 』第1期第2話 #Jujutsukaisen #五条悟",
+        "primary_channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+        "primary_channel_verified": true,
+        "primary_media_file": "voice-source-checkpoint/originals/6ImI4mNKucs.webm",
+        "primary_media_sha256": "65f49f8240c649e2b209eaeebf460232f66c7748a4d0f7b65d2e61724b39130b",
+        "primary_interval": [
+          15.08,
+          16.85
+        ],
+        "threshold": 0.65,
+        "episode_basis": "Season1 episode2, as labeled by TOHO"
+      },
+      "dialogue_kind": "character-short-line"
+    },
+    {
+      "id": "v03",
+      "kind": "voice",
+      "character": 0,
+      "slot": 3,
+      "source_file": "gojo-void-jp.mp3",
+      "source_page": "https://www.myinstants.com/en/instant/shibuya-gojo-domain-40826/",
+      "source_url": "https://www.myinstants.com/media/sounds/shibuya-gojo-domain.mp3",
+      "source_sha256": "692a8550dc8ce11dd12d1816bf09d4e20b15f194c4ce92fcd051505b3daa39c2",
+      "source_interval": [
+        2.52,
+        4.4
+      ],
+      "duration": 1.88,
+      "line": "無量空処",
+      "conservative_word_budget": 2,
+      "rms": 0.07084179847209282,
+      "peak": 0.359527587890625,
+      "sha256": "2c90ffb469a7f4339b592209bc3eaf8b43865c7c9727544559d3e2a45979fd2e",
+      "provenance": "Existing crop waveform matched to the verified TOHO public anime release. Not a claim of studio-master byte identity.",
+      "primary_verification": {
+        "method": "waveform-match-to-primary-release",
+        "voice_sha256": "2c90ffb469a7f4339b592209bc3eaf8b43865c7c9727544559d3e2a45979fd2e",
+        "primary_video_id": "JAXDgqAGhwI",
+        "primary_url": "https://www.youtube.com/watch?v=JAXDgqAGhwI",
+        "primary_title": "『劇場版 呪術廻戦「渋谷事変 特別編集版」×「死滅回游 先行上映」』公開記念キャラクター特別映像【五条 悟】",
+        "primary_channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+        "primary_channel_verified": true,
+        "primary_media_file": "voice-source-checkpoint/originals/JAXDgqAGhwI.webm",
+        "primary_media_sha256": "d4730dcdd5397b3701fa1e3170f9947cd1f1071ef5d5db463dda678bf5a8bfe8",
+        "primary_interval": [
+          1.60375,
+          3.48375
+        ],
+        "correlation": 0.889060884240919,
+        "sample_rate": 16000,
+        "filter_hz": [
+          150,
+          3800
+        ],
+        "threshold": 0.65,
+        "episode_basis": "Shibuya compilation / Gojo special; exact original episode edition not asserted"
+      },
+      "dialogue_kind": "technique-name"
+    },
+    {
+      "id": "v10",
+      "kind": "voice",
+      "character": 1,
+      "slot": 0,
+      "source_file": "jQ2d2hpBf1o.webm",
+      "source_page": "https://www.youtube.com/watch?v=jQ2d2hpBf1o",
+      "source_url": "https://www.youtube.com/watch?v=jQ2d2hpBf1o",
+      "source_sha256": "6fc2ac031cc060416b4a86e0d263d10066c6c07a79eabc43546fcb7ec4906641",
+      "source_interval": [
+        12.6,
+        13.66
+      ],
+      "duration": 1.06,
+      "line": "どけ",
+      "conservative_word_budget": 1,
+      "rms": 0.07435475324037646,
+      "peak": 0.446441650390625,
+      "sha256": "27eb8abb129b7aa955353d2fd12f607bda521088135545eefac54e99edfffd73",
+      "provenance": "Direct bounded crop from the verified TOHO public anime release; no voice synthesis or word splicing.",
+      "primary_verification": {
+        "method": "direct-primary-crop",
+        "voice_sha256": "27eb8abb129b7aa955353d2fd12f607bda521088135545eefac54e99edfffd73",
+        "primary_video_id": "jQ2d2hpBf1o",
+        "primary_url": "https://www.youtube.com/watch?v=jQ2d2hpBf1o",
+        "primary_title": "「1秒やる どけ」from「#呪術廻戦 」第39話 #jujutsukaisen #渋谷事変",
+        "primary_channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+        "primary_channel_verified": true,
+        "primary_media_file": "voice-source-checkpoint/originals/jQ2d2hpBf1o.webm",
+        "primary_media_sha256": "6fc2ac031cc060416b4a86e0d263d10066c6c07a79eabc43546fcb7ec4906641",
+        "primary_interval": [
+          12.6,
+          13.66
+        ],
+        "threshold": 0.65,
+        "episode_basis": "TV episode39, as labeled by TOHO"
+      },
+      "dialogue_kind": "character-short-line"
+    },
+    {
+      "id": "v11",
+      "kind": "voice",
+      "character": 1,
+      "slot": 1,
+      "source_file": "jQ2d2hpBf1o.webm",
+      "source_page": "https://www.youtube.com/watch?v=jQ2d2hpBf1o",
+      "source_url": "https://www.youtube.com/watch?v=jQ2d2hpBf1o",
+      "source_sha256": "6fc2ac031cc060416b4a86e0d263d10066c6c07a79eabc43546fcb7ec4906641",
+      "source_interval": [
+        8.72,
+        10.9
+      ],
+      "duration": 2.18,
+      "line": "1秒やる",
+      "conservative_word_budget": 3,
+      "rms": 0.06326211144497816,
+      "peak": 0.55364990234375,
+      "sha256": "6556004835578c4dde9e182a885795e6ecb718b479f17770982f43814b962160",
+      "provenance": "Direct bounded crop from the verified TOHO public anime release; no voice synthesis or word splicing.",
+      "primary_verification": {
+        "method": "direct-primary-crop",
+        "voice_sha256": "6556004835578c4dde9e182a885795e6ecb718b479f17770982f43814b962160",
+        "primary_video_id": "jQ2d2hpBf1o",
+        "primary_url": "https://www.youtube.com/watch?v=jQ2d2hpBf1o",
+        "primary_title": "「1秒やる どけ」from「#呪術廻戦 」第39話 #jujutsukaisen #渋谷事変",
+        "primary_channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+        "primary_channel_verified": true,
+        "primary_media_file": "voice-source-checkpoint/originals/jQ2d2hpBf1o.webm",
+        "primary_media_sha256": "6fc2ac031cc060416b4a86e0d263d10066c6c07a79eabc43546fcb7ec4906641",
+        "primary_interval": [
+          8.72,
+          10.9
+        ],
+        "threshold": 0.65,
+        "episode_basis": "TV episode39, as labeled by TOHO"
+      },
+      "dialogue_kind": "character-short-line"
+    },
+    {
+      "id": "v12",
+      "kind": "voice",
+      "character": 1,
+      "slot": 2,
+      "source_file": "sukuna-fuga.mp3",
+      "source_page": "https://www.myinstants.com/en/instant/ryomen-sukuna-fuga-7638/",
+      "source_url": "https://www.myinstants.com/media/sounds/ryomen-sukuna-fuga.mp3",
+      "source_sha256": "7d6487e1367b2c687fbd6a5d9dfac3430849d1974b323e691633a91a3de34c81",
+      "source_interval": [
+        0,
+        1.1
+      ],
+      "duration": 1.1,
+      "line": "開",
+      "conservative_word_budget": 1,
+      "rms": 0.0722822395410945,
+      "peak": 0.454833984375,
+      "sha256": "3fc74a87faa910fbe6fda4ed639955735818e88937c1681c80c4a112ba06ca29",
+      "provenance": "Existing crop waveform matched to the verified TOHO public anime release. Not a claim of studio-master byte identity.",
+      "primary_verification": {
+        "method": "waveform-match-to-primary-release",
+        "voice_sha256": "3fc74a87faa910fbe6fda4ed639955735818e88937c1681c80c4a112ba06ca29",
+        "primary_video_id": "ma11b4Q7_b8",
+        "primary_url": "https://www.youtube.com/watch?v=ma11b4Q7_b8",
+        "primary_title": "「それは 炎か？」from「#呪術廻戦 」第40話 #jujutsukaisen  #渋谷事変",
+        "primary_channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+        "primary_channel_verified": true,
+        "primary_media_file": "voice-source-checkpoint/originals/ma11b4Q7_b8.webm",
+        "primary_media_sha256": "eff384fae2c5097f476004fc2843d520bfe8cb9dda6f3e772157d53151cb9266",
+        "primary_interval": [
+          9.0458125,
+          10.1458125
+        ],
+        "correlation": 0.8601909081139252,
+        "sample_rate": 16000,
+        "filter_hz": [
+          150,
+          3800
+        ],
+        "threshold": 0.65,
+        "episode_basis": "TV episode40, as labeled by TOHO"
+      },
+      "dialogue_kind": "technique-name"
+    },
+    {
+      "id": "v13",
+      "kind": "voice",
+      "character": 1,
+      "slot": 3,
+      "source_file": "sukuna-domain.mp3",
+      "source_page": "https://www.myinstants.com/en/instant/malevolent-shrine-18466/",
+      "source_url": "https://www.myinstants.com/media/sounds/malevolent-shrine.mp3",
+      "source_sha256": "ad74dbc40bc2290c35b99e232bf92be02bc53ed49701ec473974bcf2da307424",
+      "source_interval": [
+        4.7,
+        7.0
+      ],
+      "duration": 2.3,
+      "line": "伏魔御厨子",
+      "conservative_word_budget": 3,
+      "rms": 0.0863083241979234,
+      "peak": 0.625213623046875,
+      "sha256": "35eeb09cf6081acf12ba8e7d596b96d9707f7e75ec542165a4fd78b5ba5166ea",
+      "provenance": "Existing crop waveform matched to the verified TOHO public anime release. Not a claim of studio-master byte identity.",
+      "primary_verification": {
+        "method": "waveform-match-to-primary-release",
+        "voice_sha256": "35eeb09cf6081acf12ba8e7d596b96d9707f7e75ec542165a4fd78b5ba5166ea",
+        "primary_video_id": "uHyhPKNrf5c",
+        "primary_url": "https://www.youtube.com/watch?v=uHyhPKNrf5c",
+        "primary_title": "「伏魔御厨子」from『#呪術廻戦 』第1期第4話 #Jujutsukaisen #両面宿儺",
+        "primary_channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+        "primary_channel_verified": true,
+        "primary_media_file": "voice-source-checkpoint/originals/uHyhPKNrf5c.webm",
+        "primary_media_sha256": "6031ab17c2966b39a5da609e4d4643ab116decd1220c6073961a09f543502f33",
+        "primary_interval": [
+          11.734125,
+          14.034125
+        ],
+        "correlation": 0.7864433584974273,
+        "sample_rate": 16000,
+        "filter_hz": [
+          150,
+          3800
+        ],
+        "threshold": 0.65,
+        "episode_basis": "Season1 episode4, as labeled by TOHO"
+      },
+      "dialogue_kind": "technique-name"
+    },
+    {
+      "id": "v04",
+      "kind": "voice",
+      "character": 0,
+      "slot": 4,
+      "source_file": "6ImI4mNKucs.webm",
+      "source_page": "https://www.youtube.com/watch?v=6ImI4mNKucs",
+      "source_url": "https://www.youtube.com/watch?v=6ImI4mNKucs",
+      "source_sha256": "65f49f8240c649e2b209eaeebf460232f66c7748a4d0f7b65d2e61724b39130b",
+      "source_interval": [
+        15.08,
+        16.85
+      ],
+      "duration": 1.77,
+      "line": "僕 最強だから",
+      "conservative_word_budget": 3,
+      "rms": 0.06259955565893648,
+      "peak": 0.789215087890625,
+      "sha256": "a629ebd9a63e4525f518edba1951b143923ee1f01aa31cf7d18ab0815f821b36",
+      "provenance": "Direct bounded crop from the verified TOHO public anime release; no voice synthesis or word splicing.",
+      "primary_verification": {
+        "method": "direct-primary-crop",
+        "voice_sha256": "a629ebd9a63e4525f518edba1951b143923ee1f01aa31cf7d18ab0815f821b36",
+        "primary_video_id": "6ImI4mNKucs",
+        "primary_url": "https://www.youtube.com/watch?v=6ImI4mNKucs",
+        "primary_title": "「大丈夫 僕 最強だから」 from 『#呪術廻戦 』第1期第2話 #Jujutsukaisen #五条悟",
+        "primary_channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+        "primary_channel_verified": true,
+        "primary_media_file": "voice-source-checkpoint/originals/6ImI4mNKucs.webm",
+        "primary_media_sha256": "65f49f8240c649e2b209eaeebf460232f66c7748a4d0f7b65d2e61724b39130b",
+        "primary_interval": [
+          15.08,
+          16.85
+        ],
+        "threshold": 0.65,
+        "episode_basis": "Season1 episode2, as labeled by TOHO"
+      },
+      "dialogue_kind": "character-short-line"
+    },
+    {
+      "id": "v14",
+      "kind": "voice",
+      "character": 1,
+      "slot": 4,
+      "source_file": "jQ2d2hpBf1o.webm",
+      "source_page": "https://www.youtube.com/watch?v=jQ2d2hpBf1o",
+      "source_url": "https://www.youtube.com/watch?v=jQ2d2hpBf1o",
+      "source_sha256": "6fc2ac031cc060416b4a86e0d263d10066c6c07a79eabc43546fcb7ec4906641",
+      "source_interval": [
+        0,
+        2.15
+      ],
+      "duration": 2.143015873015873,
+      "line": "手間を掛けさせるな",
+      "conservative_word_budget": 5,
+      "rms": 0.07411330049303648,
+      "peak": 0.442840576171875,
+      "sha256": "8ecbd93eea2d789894d6dc0c47916f58d1c224efb2160d52420ff5a7b6f2fc21",
+      "provenance": "Direct bounded crop from the verified TOHO public anime release; no voice synthesis or word splicing.",
+      "primary_verification": {
+        "method": "direct-primary-crop",
+        "voice_sha256": "8ecbd93eea2d789894d6dc0c47916f58d1c224efb2160d52420ff5a7b6f2fc21",
+        "primary_video_id": "jQ2d2hpBf1o",
+        "primary_url": "https://www.youtube.com/watch?v=jQ2d2hpBf1o",
+        "primary_title": "「1秒やる どけ」from「#呪術廻戦 」第39話 #jujutsukaisen #渋谷事変",
+        "primary_channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+        "primary_channel_verified": true,
+        "primary_media_file": "voice-source-checkpoint/originals/jQ2d2hpBf1o.webm",
+        "primary_media_sha256": "6fc2ac031cc060416b4a86e0d263d10066c6c07a79eabc43546fcb7ec4906641",
+        "primary_interval": [
+          0,
+          2.15
+        ],
+        "threshold": 0.65,
+        "episode_basis": "TV episode39, as labeled by TOHO"
+      },
+      "dialogue_kind": "character-short-line"
+    },
+    {
+      "id": "s00",
+      "kind": "sfx",
+      "character": 0,
+      "slot": 0,
+      "source_file": "gojo-blue.mp3",
+      "source_page": "https://www.myinstants.com/en/instant/gojo-lapse-blue-19384/",
+      "source_url": "https://www.myinstants.com/media/sounds/gojo-lapse-blue.mp3",
+      "source_sha256": "1171c8be4f22c54b7182ece1f3dbbea613c31936f724506b8b66b87e33b2b2fe",
+      "source_interval": [
+        0.35,
+        2.55
+      ],
+      "duration": 2.2,
+      "line": "",
+      "conservative_word_budget": 0,
+      "rms": 0.0425293216058939,
+      "peak": 0.287139892578125,
+      "sha256": "e8bba11d39b598094d4677d7840117b359330b2ea04226a277f38ac5271eff49",
+      "provenance": "Third-party nonverbal effect crop; not represented as an authenticated original anime master."
+    },
+    {
+      "id": "s01",
+      "kind": "sfx",
+      "character": 0,
+      "slot": 1,
+      "source_file": "gojo-red.mp3",
+      "source_page": "https://www.myinstants.com/en/instant/gojo-reversal-red-90179/",
+      "source_url": "https://www.myinstants.com/media/sounds/gojo-reversal-red.mp3",
+      "source_sha256": "05a25b5d8479a134b0dbc1bf694ed6228b7b749603b6ccd4b347b42186e8e1bc",
+      "source_interval": [
+        3.65,
+        5.15
+      ],
+      "duration": 1.5,
+      "line": "",
+      "conservative_word_budget": 0,
+      "rms": 0.04415104889893145,
+      "peak": 0.32501220703125,
+      "sha256": "87304688dd32a62587f87615a128b5963b03081fd132c77b3a34539775963f9b",
+      "provenance": "Third-party nonverbal effect crop; not represented as an authenticated original anime master."
+    },
+    {
+      "id": "s02",
+      "kind": "sfx",
+      "character": 0,
+      "slot": 2,
+      "source_file": "gojo-purple.mp3",
+      "source_page": "https://www.myinstants.com/en/instant/hidden-inventory-hollow-purple-46620/",
+      "source_url": "https://www.myinstants.com/media/sounds/hidden-inventory-hollow-purple.mp3",
+      "source_sha256": "8b38d71dfcd2cb99328bcefe35484e8bacfaa99d395db6eb234b91b6a90d48c3",
+      "source_interval": [
+        2.1,
+        4.1
+      ],
+      "duration": 2.0,
+      "line": "",
+      "conservative_word_budget": 0,
+      "rms": 0.05413482226322802,
+      "peak": 0.24884033203125,
+      "sha256": "72d323dc50de95a68f5d75714c1c8ae06f0be8573fd93fd994a905a48d6c0325",
+      "provenance": "Third-party nonverbal effect crop; not represented as an authenticated original anime master."
+    },
+    {
+      "id": "s03",
+      "kind": "sfx",
+      "character": 0,
+      "slot": 3,
+      "source_file": "gojo-void-alt.mp3",
+      "source_page": "https://www.myinstants.com/en/instant/gojo-satoru-domain-expansion-infinite-void-21764/",
+      "source_url": "https://www.myinstants.com/media/sounds/gojo-satoru-domain-expansion-infinite-void_1.mp3",
+      "source_sha256": "a9dd59773a18949464dc96794805936ba9a3fef2aeb3a740ea9f906441bf07a3",
+      "source_interval": [
+        3.8,
+        6.25
+      ],
+      "duration": 2.45,
+      "line": "",
+      "conservative_word_budget": 0,
+      "rms": 0.04554385079509336,
+      "peak": 0.29644775390625,
+      "sha256": "4f6de97ff2bf822a0f1ac75ee72500739ee41fe2084be4c696f6a6e63611e952",
+      "provenance": "Third-party nonverbal effect crop; not represented as an authenticated original anime master."
+    },
+    {
+      "id": "s10",
+      "kind": "sfx",
+      "character": 1,
+      "slot": 0,
+      "source_file": "sukuna-slash.mp3",
+      "source_page": "https://www.myinstants.com/en/instant/sukuna-slash-66797/",
+      "source_url": "https://www.myinstants.com/media/sounds/sukuna-slash.mp3",
+      "source_sha256": "210eafc3c612aa576585bf678d23b1a93c1e2e5e0632e56c7b34e32d0dec4a39",
+      "source_interval": [
+        0.12,
+        0.95
+      ],
+      "duration": 0.83,
+      "line": "",
+      "conservative_word_budget": 0,
+      "rms": 0.043651412644524185,
+      "peak": 0.190032958984375,
+      "sha256": "4e155ec1825b3437154b4376bdae63c3150634f0b0b4dbe6e7654004cd2ec0fb",
+      "provenance": "Third-party nonverbal effect crop; not represented as an authenticated original anime master."
+    },
+    {
+      "id": "s11",
+      "kind": "sfx",
+      "character": 1,
+      "slot": 1,
+      "source_file": "sukuna-slash.mp3",
+      "source_page": "https://www.myinstants.com/en/instant/sukuna-slash-66797/",
+      "source_url": "https://www.myinstants.com/media/sounds/sukuna-slash.mp3",
+      "source_sha256": "210eafc3c612aa576585bf678d23b1a93c1e2e5e0632e56c7b34e32d0dec4a39",
+      "source_interval": [
+        0.12,
+        0.55
+      ],
+      "duration": 0.73,
+      "line": "",
+      "conservative_word_budget": 0,
+      "rms": 0.039695008703834855,
+      "peak": 0.22198486328125,
+      "sha256": "9c95f6de2507985c299c0f9586d6bdbae630fc6c745c9890d8b975048e4a166f",
+      "provenance": "Third-party nonverbal effect crop; not represented as an authenticated original anime master."
+    },
+    {
+      "id": "s13",
+      "kind": "sfx",
+      "character": 1,
+      "slot": 3,
+      "source_file": "sukuna-domain.mp3",
+      "source_page": "https://www.myinstants.com/en/instant/malevolent-shrine-18466/",
+      "source_url": "https://www.myinstants.com/media/sounds/malevolent-shrine.mp3",
+      "source_sha256": "ad74dbc40bc2290c35b99e232bf92be02bc53ed49701ec473974bcf2da307424",
+      "source_interval": [
+        7.02,
+        7.75
+      ],
+      "duration": 0.73,
+      "line": "",
+      "conservative_word_budget": 0,
+      "rms": 0.04783314188902744,
+      "peak": 0.265777587890625,
+      "sha256": "b8a43b2eb2da32030a451d5fd01da47df9b74d58bf403293accf2cbb76042da3",
+      "provenance": "Third-party nonverbal effect crop; not represented as an authenticated original anime master."
+    }
+  ],
+  "primary_verified_voice_clips": 10
+}

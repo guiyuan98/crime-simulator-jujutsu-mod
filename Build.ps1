@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$GamePath)
+﻿param([Parameter(Mandatory=$true)][string]$GamePath)
 $ErrorActionPreference='Stop'
 $GamePath=(Resolve-Path -LiteralPath $GamePath).Path
 $root=$PSScriptRoot;$managed=Join-Path $GamePath 'Crime Simulator_Data\Managed';$core=Join-Path $GamePath 'BepInEx\core';$out=Join-Path $root 'dist'
@@ -9,8 +9,8 @@ $names=@('mscorlib.dll','netstandard.dll','System.dll','System.Core.dll','UnityE
 $lines=@('/nologo','/target:library','/nostdlib+','/optimize+',('/out:"'+(Join-Path $out 'JujutsuMod.dll')+'"'))
 foreach($name in $names){$path=Join-Path $managed $name;if(-not(Test-Path -LiteralPath $path)){throw ('Missing game assembly: '+$name)};$lines+='/reference:"'+$path+'"'}
 foreach($name in @('BepInEx.dll','0Harmony.dll')){$path=Join-Path $core $name;if(-not(Test-Path -LiteralPath $path)){throw ('Install BepInEx5 first; missing '+$name)};$lines+='/reference:"'+$path+'"'}
-foreach($name in @('Rules.cs','JujutsuMod.cs','SukunaFx.cs','ShrineModel.cs','FugaModel.cs','SkillHud.cs')){$lines+='"'+(Join-Path $root ('src\'+$name))+'"'}
-foreach($entry in @(@('slash.png','jjk.slash.png'),@('shrine-wood.png','jjk.shrine.wood.png'),@('fuga-flame.png','jjk.fuga.flame.png'))){$lines+='/resource:"'+(Join-Path $root ('assets\'+$entry[0]))+'",'+$entry[1]}
+foreach($name in @('Rules.cs','JujutsuMod.cs','SukunaFx.cs','ShrineModel.cs','FugaModel.cs','SkillHud.cs','WardFix.cs','Breakables.cs','GojoFx.cs','SkillAudio.cs','CharacterModels.cs')){$lines+='"'+(Join-Path $root ('src\'+$name))+'"'}
+foreach($entry in (Get-Content -LiteralPath (Join-Path $root 'assets\resources.json') -Raw -Encoding UTF8 | ConvertFrom-Json)){$lines+='/resource:"'+(Join-Path $root $entry.path)+'",'+$entry.name}
 $response=Join-Path $out 'build.rsp';[IO.File]::WriteAllLines($response,$lines,[Text.UTF8Encoding]::new($true))
 & $compiler /noconfig ('@'+$response)
 if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}

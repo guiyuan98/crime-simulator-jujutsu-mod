@@ -1,0 +1,98 @@
+[
+  {
+    "path": "assets/slash.png",
+    "name": "jjk.slash.png"
+  },
+  {
+    "path": "assets/shrine-wood.png",
+    "name": "jjk.shrine.wood.png"
+  },
+  {
+    "path": "assets/fuga-flame.png",
+    "name": "jjk.fuga.flame.png"
+  },
+  {
+    "path": "assets/gojo-plasma-wisp.png",
+    "name": "jjk.gojo.wisp.png"
+  },
+  {
+    "path": "assets/audio/s00.wav",
+    "name": "jjk.audio.s00.wav"
+  },
+  {
+    "path": "assets/audio/s01.wav",
+    "name": "jjk.audio.s01.wav"
+  },
+  {
+    "path": "assets/audio/s02.wav",
+    "name": "jjk.audio.s02.wav"
+  },
+  {
+    "path": "assets/audio/s03.wav",
+    "name": "jjk.audio.s03.wav"
+  },
+  {
+    "path": "assets/audio/s10.wav",
+    "name": "jjk.audio.s10.wav"
+  },
+  {
+    "path": "assets/audio/s11.wav",
+    "name": "jjk.audio.s11.wav"
+  },
+  {
+    "path": "assets/audio/s13.wav",
+    "name": "jjk.audio.s13.wav"
+  },
+  {
+    "path": "assets/audio/v00.wav",
+    "name": "jjk.audio.v00.wav"
+  },
+  {
+    "path": "assets/audio/v01.wav",
+    "name": "jjk.audio.v01.wav"
+  },
+  {
+    "path": "assets/audio/v02.wav",
+    "name": "jjk.audio.v02.wav"
+  },
+  {
+    "path": "assets/audio/v03.wav",
+    "name": "jjk.audio.v03.wav"
+  },
+  {
+    "path": "assets/audio/v04.wav",
+    "name": "jjk.audio.v04.wav"
+  },
+  {
+    "path": "assets/audio/v10.wav",
+    "name": "jjk.audio.v10.wav"
+  },
+  {
+    "path": "assets/audio/v11.wav",
+    "name": "jjk.audio.v11.wav"
+  },
+  {
+    "path": "assets/audio/v12.wav",
+    "name": "jjk.audio.v12.wav"
+  },
+  {
+    "path": "assets/audio/v13.wav",
+    "name": "jjk.audio.v13.wav"
+  },
+  {
+    "path": "assets/audio/v14.wav",
+    "name": "jjk.audio.v14.wav"
+  },
+  {
+    "path": "assets/characters/gojo-face-albedo.png",
+    "name": "jjk.gojo.face.png"
+  },
+  {
+    "path": "assets/characters/sukuna-face-albedo.png",
+    "name": "jjk.sukuna.face.png"
+  },
+  {
+    "path": "assets/audio/bank-manifest.json",
+    "name": "jjk.audio.sources.json"
+  }
+]
